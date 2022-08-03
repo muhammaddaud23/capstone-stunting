@@ -211,7 +211,7 @@ with c3_col2:
 st.markdown("---")
 
 #--------------------------------------------------------------------------------------
-st.header('Kemudahan Bagi Bisnis Anda')
+st.header('Kolaborasi dan Manfaat')
 
 st.write("""<div style="text-align: justify;">
 
