@@ -4,6 +4,7 @@ import json
 
 import plotly.express as px
 import plotly.graph_objects as go
+import statsmodels.api as sm
 
 ## Layout
 st.set_page_config(layout="wide")
@@ -17,8 +18,8 @@ st.write("""<div style="text-align: justify;">
 Sempat ramai di sosial media kita pernyataan ketua dewan pengarah BRIN, Ibu Megawati Soekarnoputri, terkait rasa herannya dengan para Ibu di Indonesia yang menggunakan minyak goreng.
 Terlepas dari kontroversi di akhir Maret 2022 tersebut, tahukah kamu bahwa agenda yang dihadiri Ibu Megawati sebenarnya membahas tentang fenomena balita stunting di Indonesia?
 Meminjam dari situs BKKBN<sup>[1]</sup>, <b>stunting adalah kekurangan gizi pada bayi di 1000 hari pertama kehidupan yang berlangsung lama dan menyebabkan terhambatnya perkembangan otak dan tumbuh kembang anak</b>.
-Masalah stunting penting untuk diselesaikan, karena berpotensi <b>mengganggu potensi sumber daya manusia dan berhubungan dengan tingkat kesehatan, bahkan kematian anak</b>.
-Pada umumnya, <b>stunting dapat diidentifikasi dari tinggi badan yang kurang dari nilai standar nasional</b>. 
+Masalah stunting penting untuk diselesaikan karena berpotensi <b>mengganggu potensi sumber daya manusia dan berhubungan dengan tingkat kesehatan, bahkan kematian anak</b>.
+Pada umumnya, <b>stunting pada balita dapat diidentifikasi dari tinggi badan yang kurang dari nilai standar nasional</b>. 
 
 </div>""", unsafe_allow_html=True)
 
@@ -29,7 +30,7 @@ st.write("""<div style="text-align: justify;">
 Di sisi lain, sebuah perusahaan tentu tidak dapat dipisahkan dari keadaan masyarakat di sekitarnya. <b>Perusahaan yang diterima oleh masyarakat sekitar dan pemerintah akan lebih mudah menjalankan aktivitas bisnisnya</b>.
 Selain itu, perusahaan juga memiliki pekerja yang sebagian besarnya adalah manusia sehingga nilai kemanusiaan tidak dapat dipisahkan dari pekerjaan. 
 Pada umumnya, perusahaan memiliki kewajiban memberdayakan masyarakat sekitar melalui <i> Corporate Social Responsibility </i> yang telah diatur oleh undang-undang.
-Dari kedua hal itu, <b>tulisan ini akan menunjukkan bahwa fenomena stunting di Indonesia memiliki potensi sebagai objek <i>Corporate Social Responsibility</i> atau <i>Community Development</i></b> menggunakan metode deduktif.
+Dari kedua hal yang telah disebutkan, <b>tulisan ini akan menunjukkan bahwa fenomena stunting di Indonesia memiliki potensi sebagai objek <i>Corporate Social Responsibility</i> atau <i>Community Development</i></b> menggunakan metode deduktif.
 Sebagai permulaan, mari kita lihat kondisi yang terjadi saat ini.
 
 </div>""", unsafe_allow_html=True)
@@ -61,7 +62,7 @@ with map1_1:
 with map1_2:
     st.markdown('##### Sebaran Kasus Stunting Tahun 2021')
 with map1_3:
-    st.write('')
+    st.write('Sumber: Kemenkes')
 
 m1 = go.Figure(
     go.Choroplethmapbox(
@@ -89,7 +90,7 @@ st.markdown('---')
 st.header("Suatu Permasalahan Strategis")
 st.write("""<div style="text-align: justify;">
 Fenomena stunting di Indonesia dirasa identik dengan beberapa aspek kehidupan, seperti tingginya angka kemiskinan dan rendahnya angka pendidikan.
-Namun, perasaan tidaklah cukup berdasar untuk mengkaji fenomena stunting lebih lanjut. Oleh karena itu, dilakukan analisis korelasi. <b>Nilai korelasi dari setiap aspek dapat dilihat pada <i>metric</i> di bawah</b>.
+Namun, perasaan tidaklah cukup berdasar untuk mengkaji fenomena stunting lebih lanjut. Oleh karena itu, dilakukan analisis korelasi pada prevalensi stunting dengan aspek pendidikan, sosial, dan ekonomi. <b>Nilai korelasi dari setiap aspek dapat dilihat pada <i>metric</i> di bawah</b>.
 Nilai korelasinya berada pada kategori lemah hingga <i>moderate</i>. Meskipun korelasinya tidak kuat, nilai dari <i>p-value</i> menunjukkan bahwa ketiga aspek memiliki hubungan yang signifikan secara statistik dengan angka stunting.
 Artinya, <b>stunting tidak hanya dipengaruhi oleh satu aspek saja, melainkan berkaitan dengan banyak aspek kehidupan masyarakat</b>.
 Hal tersebut membuat fenomena stunting menjadi suatu <b>permasalahan yang strategis untuk diselesaikan</b>. 
@@ -99,30 +100,33 @@ st.markdown('\n')
 
 c2_col1, c2_col2, c2_col3, c2_col4 = st.columns([2,2,2,2])
 with c2_col1:
-    st.markdown('##### Persentase Korelasi:')
+    st.markdown('##### Koefisien Korelasi:')
 with c2_col2:
-    st.metric('Stunting & Pendidikan', '-50%')
+    st.metric('Stunting & Pendidikan', '-0,50')
     #st.markdown('---')
 with c2_col3:
-    st.metric('Stunting & Sosial', '45%')
+    st.metric('Stunting & Sosial', '0,45')
     #st.markdown('---')
 with c2_col4:
-    st.metric('Stunting & Ekonomi', '36%')
+    st.metric('Stunting & Ekonomi', '0,36')
     #st.markdown('---')
 
 st.write('---')
 
-c2_col7, c2_col8, c2_col9= st.columns([2.2,2,2])
+c2_col7, c2_col8, c2_col9= st.columns([2.45,2,2])
 with c2_col7:
     st.subheader('Melihat Korelasi Lebih Dekat')
 with c2_col8:
-    aspek_dummy = st.selectbox('Aspek',("Ekonomi", "Sosial", "Pendidikan"))
+    aspek_dummy = st.selectbox('Aspek',("Sosial", "Ekonomi", "Pendidikan"))
     aspek_dict = {"Ekonomi": "stunting-ekonomi.csv",
                     "Sosial": "stunting-sosial.csv",
                     "Pendidikan": "stunting-pendidikan.csv"}
     aspek = aspek_dict[aspek_dummy]
 with c2_col9:
-    year = st.selectbox('Tahun',(2015,2016,2017,2018, 2019, 2021))
+    st.write(' ')
+    st.write(' ')
+    st.write(' ')
+    st.write('Sumber: Susenas, Kemenkes, dan BPS')
 
 c2_col5, c2_col6= st.columns([2,4])
 with c2_col5:
@@ -130,23 +134,18 @@ with c2_col5:
     Aspek sosial diwakilkan oleh persentase perempuan berusia 20-24 tahun yang hidup bersama sebelum umur 18 tahun.
     Aspek ekonomi diwakilkan oleh persentase penduduk yang berada di bawah garis kemiskinan. Sementara itu, aspek pendidikan diwakilkan 
     oleh angka siswa yang menuntaskan wajib sekolah 12 tahun<sup>[3]</sup>. 
-    <b>Angka stunting dan salah satu aspek diplot pada grafik di kanan untuk menunjukkan pola naik dan turun yang seragam ataupun berlawanan</b>.
+    <b>Angka stunting dan salah satu aspek diplot pada grafik di kanan untuk menunjukkan adanya korelasi secara kualitatif</b>.
     Pada tahun 2020, pandemi covid berada pada puncaknya, sehingga survei kasus stunting di Indonesia tidak dilakukan. Namun angkanya diprediksi bernilai 26%
     </div>""", unsafe_allow_html=True)
 
 with c2_col6:
     stunting_aspek = pd.read_csv(aspek)
-    stunting_aspek_year = stunting_aspek[stunting_aspek['tahun']==year]
-    c2 = px.line(stunting_aspek_year,
-                x="provinsi",
-                y=["prevalensi", aspek_dummy.lower()],
-                color_discrete_sequence=['blue', 'yellow'],
-                markers=True)
+    c2 = px.scatter(stunting_aspek, x=aspek_dummy.lower(), y='prevalensi', trendline='ols',
+                    trendline_color_override="black")
 
-    ## title=dict(text=f"Prevalensi Stunting dan Aspek {aspek_dummy}", font=dict(size=20)),
     c2.update_layout(
-                xaxis_title="34 Provinsi",
-                yaxis_title="Prevalensi",
+                xaxis_title=aspek_dummy,
+                yaxis_title="Stunting",
                 legend_title="Keterangan",
                 title_x=0.47,
                 width=700,
@@ -154,29 +153,24 @@ with c2_col6:
                 margin=dict(l=10, r=10, t=10, b=10),
                 legend=dict(x=.1, y=1, traceorder='normal')
     )
-    newnames = {"prevalensi": "Stunting", aspek_dummy.lower(): aspek_dummy}
-    c2.for_each_trace(lambda t: t.update(name = newnames[t.name],
-                                        legendgroup = newnames[t.name],
-                                        hovertemplate = t.hovertemplate.replace(t.name, newnames[t.name])
-                                        )
-                    )
-    c2.update_xaxes(showticklabels=False)
+    c2.update_traces(marker=dict(size=5))
+    c2.update_xaxes(showticklabels=True)
     st.plotly_chart(c2, use_container_width=False)
 
 st.markdown('---')
 
 #---------------------------------------------------------------------------------------------------
 ## Usaha Pemerintah
-st.header('Usaha Pemerintah')
+st.header('Prioritas Pemerintah')
 
 c3_col1, c3_col2 = st.columns([2,4])
 
 with c3_col1:
 
     st.write("""<div style="text-align: justify;">
-    Pemerintah telah berkomitmen untuk menurunkan angka stunting di Indonesia sejak tahun 2018 melalui <b>program intervensi gizi</b>. Selain telah menerbitkan Peraturan Presiden No 72 tahun 2021.
+    Pemerintah telah berkomitmen serius untuk menurunkan angka stunting di Indonesia sejak tahun 2018 melalui <b>program intervensi gizi</b>. Selain telah menerbitkan Peraturan Presiden No 72 tahun 2021,
     <b>Presiden Joko Widodo juga menargetkan angka stunting turun menjadi 14% pada tahun 2024</b>. Melihat data dari Pemantauan Status Gizi (PSG) tahun 2015 hingga 2018
-    dan Studi Status Gizi (SSGI) tahun 2019 hingga 2021, target tersebut terlihat cukup realistis. Pada gambar dibawah, terlihat adanya <i>trend</i> yang menurun secara konsisten sejak awal tahun 2019.
+    dan Studi Status Gizi (SSGI) tahun 2019 hingga 2021, target tersebut terlihat cukup ambisius. Pada gambar di kanan, terlihat adanya <i>trend</i> yang menurun secara konsisten sejak awal tahun 2019.
     Hal ini dapat <strong>mengindikasikan keberhasilan program intervensi gizi yang telah dilakukan oleh pemerintah</strong>.
     </div>""", unsafe_allow_html=True)
 
@@ -216,8 +210,8 @@ st.header('Kolaborasi dan Manfaat')
 st.write("""<div style="text-align: justify;">
 
 Pemerintah telah membuka kesempatan bagi pihak ketiga seperti swasta, akademisi, media, dan komunitas untuk turut ikut serta menurunkan angka stunting lewat <b>program kemitraan</b>.
-Beberapa perusahaan seperti Danone dan Mayora terlibat dalam usaha penurunan stunting pada skala nasional bersama instansi pemerintah terkait. Program kemitraan memiliki beberapa opsi kegiatan yang dapat dilaksanakan oleh pihak ketiga sesuai dengan profil dan kapasitas pihak ketiga.
-Pada gambar di bawah dapat dilihat <b>5 aksi yang paling banyak dilakukan oleh perusahaan</b><sup>[4]</sup>. Pelatihan dan peningkatan layanan posyandu menjadi aksi yang paling banyak dilakukan. Pelatihan mencakup pelatihan kader dan kewirausahaan, sedangkan layanan posyandu mencakup pemeriksaan kesehatan.
+Berdasarkan data di situs Kementerian Sekretaris Negara<sup>[4]</sup>, <b>beberapa perusahaan seperti Danone dan Mayora terlibat dalam usaha penurunan stunting pada skala nasional bersama instansi pemerintah terkait</b>. Program kemitraan memiliki beberapa opsi kegiatan yang dapat dilaksanakan oleh pihak ketiga sesuai dengan profil dan kapasitas pihak ketiga.
+Pada gambar di bawah dapat dilihat <b>5 aksi yang paling banyak dilakukan oleh perusahaan</b>. Pelatihan dan peningkatan layanan posyandu menjadi aksi yang paling banyak dilakukan. Pelatihan mencakup pelatihan kader dan kewirausahaan, sedangkan layanan posyandu mencakup pemeriksaan kesehatan.
 
 </div>""", unsafe_allow_html=True)
 
@@ -244,8 +238,9 @@ with col4_2:
     <b>Pelaksanaan CSR terkait fenomena balita stunting dapat meningkatkan citra baik perusahaan</b>.
     Tinjau kasus pada PT Mayora Indah. Dampak dari pelaksanaan CSR terkait fenomena balita stunting dapat dibandingkan dengan pelaksanaan CSR yang telah dilakukan oleh PT Mayora Indah berupa program bedah rumah.
     Untuk meninjau perbandingan tersebut, pada gambar di kiri disajikan perbandingan publikasi media lewat mesin pencarian Google.
-    Jumlah artikel yang membahas CSR fenomena balita stunting dibandingkan dengan CSR bedah rumah.
-    Kedua program CSR tersebut menjadi bahasan yang ramai pada rentang pertengahan tahun 2020 hingga 2022. <b>Hasil ini mengindikasikan bahwa pelaksanaan CSR balita stunting lebih banyak diberi perhatian/eksposur oleh media dibandingkan CSR bedah rumah</b>.
+    <b>Jumlah artikel yang membahas CSR fenomena balita stunting dibandingkan dengan CSR bedah rumah</b>.
+    Kedua program CSR tersebut menjadi bahasan yang ramai pada rentang pertengahan tahun 2020 hingga 2022. Pada gambar di kiri, dapat dilihat bahwa persentase hasil pencarian CSR stunting lebih banyak dibandingkan CSR bedah rumah.
+    <b>Hasil ini mengindikasikan bahwa pelaksanaan CSR balita stunting lebih banyak diberi perhatian/eksposur oleh media dibandingkan CSR bedah rumah</b>.
     </div>""", unsafe_allow_html=True)
 
 with col4_1:
@@ -255,7 +250,7 @@ with col4_1:
             color='keterangan', color_discrete_map={'stunting':'#7586DF', 'bedah rumah':'#949494'})
     c4_2.update_layout(
         xaxis_title="",
-        yaxis_title="Jumlah Hasil Pencarian",
+        yaxis_title="Jumlah Hasil Pencarian (%)",
         width=400,
         height=280,
         showlegend=False,
@@ -285,7 +280,7 @@ st.header('Sumber dan Referensi')
 
 st.markdown("""
 1. BKKBN https://www.bkkbn.go.id/berita-indonesia-cegah-stunting
-2. Litbangkes https://www.litbang.kemkes.go.id/buku-saku-hasil-studi-status-gizi-indonesia-ssgi-tahun-2021/
+2. Litbangkes, Kemenkes https://www.litbang.kemkes.go.id/buku-saku-hasil-studi-status-gizi-indonesia-ssgi-tahun-2021/
 3. Badan Pusat Statistik, Tujuan Pembangunan Berkelanjutan, Kesetaraan Gender, dan Pendidikan Berkualitas https://www.bps.go.id
 4. Kementerian Sekretariat Negara, Sekretariat Wakil Presiden https://stunting.go.id/
 """)
