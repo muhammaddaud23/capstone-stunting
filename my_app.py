@@ -61,8 +61,6 @@ with map1_1:
     st.write('')
 with map1_2:
     st.markdown('##### Sebaran Kasus Stunting Tahun 2021')
-with map1_3:
-    st.write('Sumber: Kemenkes')
 
 m1 = go.Figure(
     go.Choroplethmapbox(
@@ -71,7 +69,8 @@ m1 = go.Figure(
         z=df_mod["2021"],
         colorscale="cividis",
         marker_opacity=0.5,
-        marker_line_width=0.5
+        marker_line_width=0.5,
+        text = df_mod['provinsi']
     )
 )
 m1.update_layout(
@@ -79,7 +78,17 @@ m1.update_layout(
     mapbox_zoom=3.5,
     mapbox_center={"lat": -2, "lon": 118},
     width=900,
-    height=350
+    height=350,
+    annotations = [dict(
+        x=0.02,
+        y=0.04,
+        xref='paper',
+        yref='paper',
+        text='Sumber: Kemenkes',
+        showarrow = False,
+        font=dict(size=15, color="black"),
+        bgcolor='white'
+    )]
 )
 m1.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 st.plotly_chart(m1, use_container_width=True)
@@ -144,8 +153,8 @@ with c2_col6:
                     trendline_color_override="black")
 
     c2.update_layout(
-                xaxis_title=aspek_dummy,
-                yaxis_title="Stunting",
+                xaxis_title='Indikator '+aspek_dummy,
+                yaxis_title="Prevalensi Stunting",
                 legend_title="Keterangan",
                 title_x=0.47,
                 width=700,
@@ -184,9 +193,9 @@ with c3_col2:
                 color_discrete_sequence=["black", "#5000B9"],
                 markers=True)
     c3.add_bar(x=overall.loc[0:3,'tahun'], y=overall.loc[0:3,'prevalensi'],
-                marker=dict(color="#949494"), width=0.5, showlegend=False)
+                marker=dict(color="#949494"), width=0.55, showlegend=False)
     c3.add_bar(x=overall.loc[4:,'tahun'], y=overall.loc[4:,'prevalensi'],
-                marker=dict(color="#51A2D5"), width=0.5, showlegend=False)
+                marker=dict(color="#51A2D5"), width=0.55, showlegend=False)
     c3.update_layout(title=dict(text="Angka Stunting di Indonesia", font=dict(size=20)),
                 xaxis_title="Tahun",
                 yaxis_title="Prevalensi",
@@ -195,10 +204,20 @@ with c3_col2:
                 width=700,
                 height=350,
                 margin=dict(l=10, r=10, t=30, b=10),
-                showlegend=True, 
+                showlegend=False, 
                 legend=dict(x=0.745, y=1, traceorder='normal'),
                 yaxis_range=[20,33]
                 )
+    c3.add_annotation(text="Pemantauan Status Gizi",
+                  xref="paper", yref="paper",
+                  x=0.15, y=0.88, showarrow=False,
+                  font=dict(size=14, color="#DBDBDB"),
+                  bgcolor="black")
+    c3.add_annotation(text="Studi Status Gizi",
+                  xref="paper", yref="paper",
+                  x=0.87, y=0.65, showarrow=False,
+                  font=dict(size=14, color="#FFFFFF"),
+                  bgcolor="#5000B9")
 
     st.plotly_chart(c3, use_container_width=False)
 
@@ -218,20 +237,24 @@ Pada gambar di bawah dapat dilihat <b>5 aksi yang paling banyak dilakukan oleh p
 kegiatan = pd.read_csv('count-kegiatan.csv')
 kegiatan_mod = kegiatan.sort_values(by='jumlah', ascending=False)
 kegiatan_mod = kegiatan_mod.head(5)
-c4_1 = px.bar(kegiatan_mod, x='jumlah', y='aksi', orientation='h',
+c4_1 = px.bar(kegiatan_mod, x='jumlah', y='aksi', orientation='h', text_auto=True,
         color='group', color_discrete_map={'satu':'#7586DF', 'dua':'#949494', 'tiga':'#C6C6C6'})
 c4_1.update_layout(yaxis=dict(autorange="reversed"),
     xaxis_title="Jumlah Perusahaan",
     yaxis_title="",
-    width=800,
+    width=850,
     height=280,
     showlegend=False,
-    bargap=0.05,
-    margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    bargap=0.3,
+    margin={"r": 0, "t": 0, "l": 300, "b": 0},
+    font=dict(size=15))
+c4_1.update_xaxes(showticklabels=False)
+c4_1.update_traces(textfont_size=16, textangle=0, textposition="outside", cliponaxis=False)
+
 st.plotly_chart(c4_1, use_container_width=False)
 st.markdown('---')
 
-col4_1, col4_2 = st.columns([3,5])
+col4_1, col4_2 = st.columns([1.8,5])
 
 with col4_2:
     st.write("""<div style="text-align: justify;">
@@ -246,20 +269,10 @@ with col4_2:
 with col4_1:
     news = pd.read_csv('news-bersih.csv')
     news['percent'] = round(news['angka pencarian']/news['total']*100,2)
-    c4_2 = px.bar(news, x='keterangan', y='percent', text='percent',
-            color='keterangan', color_discrete_map={'stunting':'#7586DF', 'bedah rumah':'#949494'})
-    c4_2.update_layout(
-        xaxis_title="",
-        yaxis_title="Jumlah Hasil Pencarian (%)",
-        width=400,
-        height=280,
-        showlegend=False,
-        bargap=0.05,
-        margin={"r": 10, "t": 5, "l": 0, "b": 0},
-        yaxis_range=[0,100])
-    c4_2.update_traces(texttemplate='%{text:.2s}%', textposition='outside')
-    c4_2.update_traces(width=0.5)
-    st.plotly_chart(c4_2, use_container_width=False)
+
+    st.metric('Hasil Pencarian CSR Stunting:', str(round(news.loc[0,'percent']))+'%')
+    st.metric('Hasil Pencarian CSR Bedah Rumah:', str(round(news.loc[1,'percent']))+'%')
+    st.write('Berdasarkan 4 laman hasil pencarian')
 
 st.markdown('---')
 
