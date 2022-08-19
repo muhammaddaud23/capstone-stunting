@@ -289,6 +289,8 @@ Potensi tersebut antara lain:
 - Memperluas potensi pengembangan bisnis dan jaringan di pemerintahan, mengingat terbukanya ruang kolaborasi bersama pemerintah
 """)
 
+st.markdown('---')
+
 st.header('Sumber dan Referensi')
 
 st.markdown("""
